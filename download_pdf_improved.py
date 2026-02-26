@@ -11,7 +11,7 @@ Produces a log showing downloaded / not downloaded status.
 #### IF error : "ModuleNotFOundError: no module named PyPDF2"
 # then uncomment line below (i.e. remove the #):
 
-# pip install PyPDF2
+# pip install PyPDF2 pandas requests openpyxl tqdm
 
 
 import pandas as pd
@@ -28,13 +28,13 @@ from typing import Optional
 
 #### Config - edit section to fit your needs ####
 CONFIG = {
-    "list_pth": "C:\\Users\\SPAC-O-6\\Downloads\\Data\\Data\\GRI_2017_2020 (1).xlsx",
-    "pth": "C:\\Users\\SPAC-O-6\\Downloads\\Data\\Data\\",
+    "list_pth": r"C:\Users\hanna\PDF_py\GRI_2017_2020 (1).xlsx", # path to Excel file with URLs
+    "pth": r"C:\Users\hanna\PDF_py", # base path for downloads and logs - downloaded PDFs will be saved in a "dwn" subfolder, logs will be saved in the base path
     "ID": "BRnum",
     "url_column": "Pdf_URL",  # column AL
     "other_url_column": "Report HTML Address",  # column AM
     "max_workers": 10,  # parallel downloads
-    "download_timeout": 15,  # seconds before a download is considered failed
+    "download_timeout": 30,  # seconds before a download is considered failed
     "Prototype": True,  # if True, only download first 10 files for testing
     "Prototype_count": 100,  # number of files to download in prototype mode
 }
@@ -47,7 +47,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler("download_log.log"),  # Log to file
+        #logging.FileHandler("download_log.log"),  # Log to file
         logging.StreamHandler(),  # Log to console
     ],
 )
@@ -106,7 +106,7 @@ def check_if_valid_pdf(savefile):
 
 
 def download_file(task):
-    task = DownloadTask(**task)  # Convert dict to DownloadTask object
+    #task = DownloadTask(**task)  # Convert dict to DownloadTask object
     savefile = os.path.join(task.output_dir, str(task.brnum) + ".pdf")
 
     urls_to_try = [task.url_column]
@@ -160,11 +160,13 @@ def download_multiple_files(tasks, df2, max_workers):
             leave=True,
         )
         for i, future in enumerate(progress, 1):
+            brnum = futures[future]
+
             try:
                 result: DownloadResult = future.result(timeout=30)
 
             except Exception as e:
-                brnum = futures[future]
+                #brnum = futures[future]
                 result = DownloadResult(
                     brnum=brnum, status="Ikke downloaded", url_used="", error=str(e)
                 )
