@@ -1,7 +1,7 @@
-aiofiles
-aiohttp
-tqdm
-pandas
-PyPDF2
-requests
-openpyxl
+
+pandas==2.2.2
+pypdf==4.2.0          # replaces deprecated PyPDF2
+requests==2.32.3
+openpyxl==3.1.4
+tqdm==4.66.4
+python-dotenv==1.0.1  # loads .env into os.environ

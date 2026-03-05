@@ -1,0 +1,19 @@
+# docker-compose.yml
+# Run the downloader in a reproducible container without installing anything locally.
+#
+# Usage:
+#   1. Copy .env and fill in your paths.
+#   2. docker compose up --build
+#
+# The container writes PDFs and the log to ./output on the host machine.
+
+services:
+  pdf-downloader:
+    build: .
+    container_name: pdf_downloader
+    env_file:
+      - .env                        # picks up LIST_PTH and BASE_PTH
+    volumes:
+      - .:/app
+    command: python app.py      # downloaded PDFs and log land here
+    restart: "no"                   # run once and exit
