@@ -29,7 +29,7 @@ pip install pandas PyPDF2 requests openpyxl tqdm
 
 ##### How It Works
 
-python download_pdf_improved.py
+python app.py
 
 Excel File should contain BRnum, it must be unique; Pdf_URL with http link, if it is empty, the script uses Report HTML Address.
 
